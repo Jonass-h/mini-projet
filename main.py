@@ -16,7 +16,8 @@ estimator = load_pretrain_model('VGG_origin')
 action_classifier = load_action_premodel('Action/framewise_recognition.h5')
 
 # 参数初始化
-realtime_fps = '0.0000'
+#realtime_fps = '0.0000'
+realtime_fps = '12'
 start_time = time.time()
 fps_interval = 1
 fps_count = 0

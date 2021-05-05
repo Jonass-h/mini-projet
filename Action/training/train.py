@@ -29,6 +29,8 @@ class Actions(Enum):
     operate = 2
     fall_down = 3
     # run = 4
+    # kicking =5
+    # hitting=6
 
 
 # Callback class to visialize training progress
