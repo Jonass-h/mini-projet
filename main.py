@@ -12,7 +12,7 @@ parser.add_argument('--video', help='Path to video file.')
 args = parser.parse_args()
 
 # 导入相关模型
-estimator = load_pretrain_model('VGG_origin')
+estimator = load_pretrain_model('mobilenet_thin')
 action_classifier = load_action_premodel('Action/framewise_recognition.h5')
 
 # 参数初始化
