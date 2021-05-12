@@ -164,6 +164,8 @@ def framewise_recognize(pose, pretrained_model):
                     print(f"predicf for {id}")
                     print(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36).shape)
 
+                    # الحكمة ممبعد تجي هنا
+
                 #pred = np.argmax(pretrained_model.predict(joints_norm_single_person))
 
                 init_label = Actions(pred).name
