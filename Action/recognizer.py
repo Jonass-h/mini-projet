@@ -10,6 +10,8 @@ from Tracking.deep_sort.tracker import Tracker
 from keras.models import load_model
 from .action_enum import Actions
 
+import lstm_pred
+
 # Use Deep-sort(Simple Online and Realtime Tracking)
 # To track multi-person for multi-person actions recognition
 
@@ -98,7 +100,6 @@ trk_clr = (0, 255, 0)
 def load_action_premodel(model):
     return load_model(model)
 
-
 def framewise_recognize(pose, pretrained_model):
     frame, joints, bboxes, xcenter = pose[0], pose[1], pose[2], pose[3]
     joints_norm_per_frame = np.array(pose[-1])
@@ -136,28 +137,42 @@ def framewise_recognize(pose, pretrained_model):
             ymin = int(d[1])
             xmax = int(d[2]) + xmin
             ymax = int(d[3]) + ymin
-            # id = int(d[4])
+            
+            id = int(d[4]) # <<<<
+            
             try:
-                # xcenter是一帧图像中所有human的1号关节点（neck）的x坐标值
-                # 通过计算track_box与human的xcenter之间的距离，进行ID的匹配
+                # xcenter is the x coordinate value of the joint point (neck) of all humans in a frame of image
+                # By calculating the distance between track_box and human xcenter, ID matching 
                 tmp = np.array([abs(i - (xmax + xmin) / 2.) for i in xcenter])
                 j = np.argmin(tmp)
             except:
-                # 若当前帧无human，默认j=0（无效）
+                # no humans !! 
                 j = 0
 
-            # 进行动作分类
+            # faire la classification =========================================================
             if joints_norm_per_frame.size > 0:
                 joints_norm_single_person = joints_norm_per_frame[j*36:(j+1)*36]
-                joints_norm_single_person = np.array(joints_norm_single_person).reshape(-1, 36)
-                pred = np.argmax(pretrained_model.predict(joints_norm_single_person))
+                #joints_norm_single_person = np.array(joints_norm_single_person).reshape(-1, 36)
+                
+                #print("==========================================")
+                #print(id)
+                #print(len(joints_norm_single_person[0]))
+                #print(joints_norm_single_person[0])
+                #print("==========================================")
+
+                if lstm_pred.update_ctx(id,joints_norm_single_person):
+                    print(f"predicf for {id}")
+                    print(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36).shape)
+
+                #pred = np.argmax(pretrained_model.predict(joints_norm_single_person))
+
                 init_label = Actions(pred).name
                 # 显示动作类别
                 cv.putText(frame, init_label, (xmin + 80, ymin - 45), cv.FONT_HERSHEY_SIMPLEX, 1, trk_clr, 3)
-                # 异常预警(under scene)
+                 # 异常预警(under scene)
                 if init_label == 'fall_down':
                     cv.putText(frame, 'WARNING: someone is falling down!', (20, 60), cv.FONT_HERSHEY_SIMPLEX,
-                               1.5, (0, 0, 255), 4)
+                                1.5, (0, 0, 255), 4)
             # 画track_box
             cv.rectangle(frame, (xmin - 10, ymin - 30), (xmax + 10, ymax), trk_clr, 2)
     return frame

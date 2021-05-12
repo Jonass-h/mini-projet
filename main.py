@@ -7,6 +7,8 @@ from utils import choose_run_mode, load_pretrain_model, set_video_writer
 from Pose.pose_visualizer import TfPoseVisualizer
 from Action.recognizer import load_action_premodel, framewise_recognize
 
+import lstm_pred
+
 parser = argparse.ArgumentParser(description='Action Recognition by OpenPose')
 parser.add_argument('--video', help='Path to video file.')
 args = parser.parse_args()
@@ -17,7 +19,7 @@ action_classifier = load_action_premodel('Action/framewise_recognition.h5')
 
 # 参数初始化
 #realtime_fps = '0.0000'
-realtime_fps = '12'
+realtime_fps = 12
 start_time = time.time()
 fps_interval = 1
 fps_count = 0
