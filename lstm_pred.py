@@ -19,9 +19,13 @@ def update_ctx(
 ):
     if new_id in ctx:
         if(len(ctx[new_id]) >= 4):
-            return True # make predection !
-            ctx[new_id].pop(0)
+                        # make predection !
+            ret = ctx[new_id]
+            ctx[new_id].pop(0)  ## 
+            ctx[new_id].append(new_pose)
+            return True, ret
         ctx[new_id].append(new_pose)
+
     else :
         if len(ctx) == num_person:
             keys = update_keys()
@@ -30,4 +34,4 @@ def update_ctx(
             ctx.pop(key)
         
         ctx[new_id] = [new_pose]
-    return False
+    return False, None

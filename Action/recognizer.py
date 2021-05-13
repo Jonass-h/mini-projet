@@ -160,12 +160,15 @@ def framewise_recognize(pose, pretrained_model):
                 #print(joints_norm_single_person[0])
                 #print("==========================================")
 
-                if lstm_pred.update_ctx(id,joints_norm_single_person):
-                    print(f"predicf for {id}")
+                exists, ret = lstm_pred.update_ctx(id,joints_norm_single_person)
+                print(exists)
+                print("----")
+                if exists:
+                    print(f"predicting for {id}")
                     #print(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36).shape)
 
                     # الحكمة ممبعد تجي هنا
-                    print(pretrained_model.predict(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36)))                
+                    print(pretrained_model.predict(np.array(ret).reshape(-1, 4, 36)))                
                     pred = 1
                     init_label = Actions(pred).name
                     # 显示动作类别
