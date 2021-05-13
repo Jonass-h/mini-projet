@@ -162,18 +162,19 @@ def framewise_recognize(pose, pretrained_model):
 
                 if lstm_pred.update_ctx(id,joints_norm_single_person):
                     print(f"predicf for {id}")
-                    print(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36).shape)
+                    #print(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36).shape)
 
-                #pred = np.argmax(pretrained_model.predict(joints_norm_single_person))
-
-                init_label = Actions(pred).name
-                # 显示动作类别
-                cv.putText(frame, init_label, (xmin + 80, ymin - 45), cv.FONT_HERSHEY_SIMPLEX, 1, trk_clr, 3)
-                 # 异常预警(under scene)
-                if init_label == 'fall_down':
-                    cv.putText(frame, 'WARNING: someone is falling down!', (20, 60), cv.FONT_HERSHEY_SIMPLEX,
-                                1.5, (0, 0, 255), 4)
-            # 画track_box
+                    # الحكمة ممبعد تجي هنا
+                    print(pretrained_model.predict(np.array(lstm_pred.ctx[id]).reshape(-1, 4, 36)))                
+                    pred = 1
+                    init_label = Actions(pred).name
+                    # 显示动作类别
+                    cv.putText(frame, init_label, (xmin + 80, ymin - 45), cv.FONT_HERSHEY_SIMPLEX, 1, trk_clr, 3)
+                    # 异常预警(under scene)
+                    if init_label == 'fall_down':
+                        cv.putText(frame, 'WARNING: someone is falling down!', (20, 60), cv.FONT_HERSHEY_SIMPLEX,
+                                    1.5, (0, 0, 255), 4)
+                # 画track_box
             cv.rectangle(frame, (xmin - 10, ymin - 30), (xmax + 10, ymax), trk_clr, 2)
     return frame
 
