@@ -4,6 +4,7 @@ import random
 # max tracked person
 num_person = 2
 # stor person id's and their poses
+# TODO : 7aja kima ttl
 ctx = { }
 # store keys
 keys = []
